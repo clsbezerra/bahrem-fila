@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: bahrem_fila
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - bahrem_pg:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/bahrem_fila
+      JWT_SECRET: troque-esta-chave-em-producao
+      ADMIN_USER: admin
+      ADMIN_PASSWORD: troque-esta-senha-em-producao
+      RESTAURANT_NAME: Bahrem Burger & Grill
+      PUBLIC_URL: http://localhost:3000
+    ports:
+      - "3000:3000"
+
+volumes:
+  bahrem_pg:
