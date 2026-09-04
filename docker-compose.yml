@@ -22,6 +22,7 @@ services:
       JWT_SECRET: troque-esta-chave-em-producao
       ADMIN_USER: admin
       ADMIN_PASSWORD: troque-esta-senha-em-producao
+      ADMIN_BOOTSTRAP: "false"
       RESTAURANT_NAME: Bahrem Burger & Grill
       PUBLIC_URL: http://localhost:3000
     ports:

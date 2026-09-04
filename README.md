@@ -1,40 +1,25 @@
-# Bahrem Burger & Grill — Fila Pro
+# Bahrem Burger & Grill — Fila Pro 3.4
 
-## Incluído
-- Aplicativo web do cliente.
-- Categorias 2–3, 4–5, 6–7 e 10+.
-- Quantidade exata para 10+.
-- Atendimento preferencial para 60+ e pessoa com deficiência/necessidade especial.
-- Banco PostgreSQL permanente.
-- Login administrativo.
-- Painel do restaurante.
-- Chamada por categoria.
-- Ordem de prioridade: preferenciais primeiro dentro da categoria; entre pessoas do mesmo status, vale a ordem de chegada.
-- Monitor/TV com última senha e últimas 3 chamadas.
-- Tempo decorrido atualizado a cada segundo.
-- Alerta sonoro no monitor após interação inicial.
-- QR Code fixo gerado pelo servidor.
-- Docker Compose para executar app + PostgreSQL.
-- Página de QR Code pronta para impressão.
+## Novidades da 3.4
+- Cliente recebe token individual para acompanhar a senha.
+- A senha é salva no navegador e pode ser recuperada após atualizar/fechar e reabrir a página.
+- Página inicial mostra “Acompanhar minha senha” quando existe um atendimento salvo no aparelho.
+- Página da senha mostra posição atual, quantidade de senhas à frente e total da categoria.
+- Quando a posição chega a 1, aparece “VOCÊ É O PRÓXIMO A SER CHAMADO!”.
+- A posição é recalculada no servidor e respeita prioridade + ordem de chegada dentro da categoria.
+- Atualização automática a cada 2 segundos.
+- Comprovante/QR Code individual continua disponível.
+- Administração de usuários e bootstrap de credenciais continuam incluídos.
+- Banco existente é preservado; as migrações necessárias são executadas na inicialização.
 
-## Rodar localmente com Docker
-1. Instale Docker Desktop.
-2. Copie `.env.example` para `.env` se quiser.
-3. Ajuste `JWT_SECRET`, `ADMIN_USER`, `ADMIN_PASSWORD` e `PUBLIC_URL`.
-4. Execute `docker compose up --build`.
-5. Cliente: http://localhost:3000/
-6. Admin: http://localhost:3000/admin.html
-7. Monitor: http://localhost:3000/display.html
-8. QR Code: http://localhost:3000/qr.html
+## Observação sobre a posição
+O painel administrativo chama clientes por categoria (2–3, 4–5, 6–7 e 10+). Por isso a tela do cliente informa a posição dentro da sua categoria. Quando a posição é 1, a mensagem “Você é o próximo a ser chamado” é verdadeira para a próxima chamada daquela categoria.
 
-## Credenciais iniciais
-Definidas por `ADMIN_USER` e `ADMIN_PASSWORD`. Troque a senha antes de colocar na internet.
-
-## Publicação
-O projeto está preparado para hospedagem que suporte Node.js + PostgreSQL e WebSocket. Em produção, use HTTPS e configure `DATABASE_URL`, `JWT_SECRET` e `PUBLIC_URL` com os valores do servidor.
-
-## Voz
-A versão atual usa alerta sonoro no monitor. A chamada por voz pode ser adicionada com SpeechSynthesis do navegador, sem serviço externo, caso desejado.
-
-## Observação
-O sistema apenas registra o status informado pelo cliente. A administração do estabelecimento deve validar a utilização da prioridade conforme a legislação e as regras internas aplicáveis.
+## Railway
+Variáveis mínimas:
+- DATABASE_URL
+- JWT_SECRET
+- ADMIN_USER
+- ADMIN_PASSWORD
+- PUBLIC_URL (opcional, recomendado para o QR Code)
+- ADMIN_BOOTSTRAP=true somente durante a recuperação de uma credencial existente; depois remova ou mude para false.

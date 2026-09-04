@@ -1,0 +1,18 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Minha senha — Bahrem</title><link rel="stylesheet" href="/styles.css"></head><body><main class="shell proof-page"><header class="brand"><img src="/logo.jpg"><h1>Bahrem <span>Burger & Grill</span></h1></header><section class="ticket live-ticket"><small>SUA SENHA</small><strong id="num">---</strong><p id="group"></p><div id="state" class="proof-state">Carregando...</div><section id="positionBox" class="position-box hidden"><small>SUA POSIÇÃO NA FILA</small><strong id="position">—</strong><p id="positionText">Calculando sua posição...</p><div class="progress"><span id="progress"></span></div></section><div id="nextBox" class="next-box hidden">🔔 <b>VOCÊ É O PRÓXIMO A SER CHAMADO!</b><span>Fique atento ao painel de chamadas.</span></div><img id="ticketQr" class="ticket-qr" alt="QR Code do comprovante"><p id="categoryNote" class="note">Sua posição considera a categoria do grupo e a ordem de atendimento preferencial. O restaurante realiza as chamadas por categoria.</p><p class="note">Este QR Code é seu comprovante. Não compartilhe com outras pessoas.</p><button id="cancel" class="danger">CANCELAR SENHA</button></section></main><script>
+const params=new URLSearchParams(location.search);let token=params.get("token")||localStorage.getItem("bahremTicketToken");let currentTicket=null;let loading=false;
+if(token){localStorage.setItem("bahremTicketToken",token);ticketQr.src="/api/ticket-qr/"+encodeURIComponent(token)}else{document.body.innerHTML="<main class='shell'><section class='panel'><h2>Comprovante inválido</h2><p>Não encontramos uma senha salva neste aparelho.</p><a href='/' class='back-link'>Voltar para a fila</a></section></main>"}
+function render(x){num.textContent=x.ticket;group.textContent=x.people_count+" pessoas · "+(x.priority?"ATENDIMENTO PREFERENCIAL":"fila normal");state.className="proof-state "+x.status;positionBox.classList.add("hidden");nextBox.classList.add("hidden");
+ if(x.status==="waiting"){
+   state.textContent="🟢 VOCÊ ESTÁ NA FILA — SUA SENHA ESTÁ GARANTIDA";positionBox.classList.remove("hidden");position.textContent=x.position+"º";
+   if(x.is_next){positionText.textContent="Você é o próximo a ser chamado! Fique atento ao painel.";nextBox.classList.remove("hidden");}
+   else {const before=x.ahead===1?"1 senha antes da sua":""+x.ahead+" senhas antes da sua";positionText.textContent=before+". Você continua na fila.";}
+   const pct=x.category_total?Math.max(8,Math.min(100,((x.category_total-x.position+1)/x.category_total)*100)):100;progress.style.width=pct+"%";
+ }else if(x.status==="called")state.textContent="🔔 SUA SENHA FOI CHAMADA — DIRIJA-SE AO ATENDIMENTO";
+ else if(x.status==="served")state.textContent="✅ Atendimento finalizado";
+ else state.textContent="⚪ Senha cancelada";
+ cancel.style.display=x.status==="waiting"?"block":"none";
+}
+async function load(){if(!token||loading)return;loading=true;try{const r=await fetch("/api/tickets/public/"+encodeURIComponent(token),{cache:"no-store"});const x=await r.json();if(!r.ok){state.textContent=x.error||"Comprovante inválido";positionBox.classList.add("hidden");return}currentTicket=x.ticket;render(x)}catch{state.textContent="Sem conexão. Tentando novamente..."}finally{loading=false}}
+load();setInterval(load,2000);
+cancel.onclick=async()=>{if(!currentTicket)return;if(!confirm("Deseja cancelar sua senha?"))return;await fetch("/api/tickets/"+encodeURIComponent(currentTicket),{method:"DELETE"});load()};
+</script></body></html>
