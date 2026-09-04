@@ -22,7 +22,7 @@ const schema=fs.readFileSync(path.join(__dirname,"schema.sql"),"utf8");
 async function init(){
   await pool.query(schema);
   await pool.query("ALTER TABLE admins ADD COLUMN IF NOT EXISTS active BOOLEAN NOT NULL DEFAULT TRUE");
-  await pool.query("ALTER TABLE tickets ADD COLUMN IF NOT EXISTS public_token_hash TEXT UNIQUE");
+  await pool.query("ALTER TABLE tickets ADD COLUMN IF NOT EXISTS public_token_hash TEXT");
   await pool.query("CREATE UNIQUE INDEX IF NOT EXISTS idx_tickets_public_token_hash ON tickets(public_token_hash) WHERE public_token_hash IS NOT NULL");
 
   const bootstrap=String(process.env.ADMIN_BOOTSTRAP||"").toLowerCase()==="true";

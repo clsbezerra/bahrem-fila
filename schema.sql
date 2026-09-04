@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS admins (
 CREATE TABLE IF NOT EXISTS tickets (
   id BIGSERIAL PRIMARY KEY,
   ticket TEXT UNIQUE NOT NULL,
-  public_token_hash TEXT UNIQUE,
+  public_token_hash TEXT,
   people_count INTEGER NOT NULL CHECK (people_count >= 2),
   category TEXT NOT NULL CHECK (category IN ('23','45','67','10')),
   priority BOOLEAN NOT NULL DEFAULT FALSE,
@@ -23,4 +23,3 @@ CREATE TABLE IF NOT EXISTS tickets (
 
 CREATE INDEX IF NOT EXISTS idx_tickets_waiting ON tickets(status, category, priority DESC, created_at);
 CREATE INDEX IF NOT EXISTS idx_tickets_called ON tickets(status, called_at DESC);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_tickets_public_token_hash ON tickets(public_token_hash) WHERE public_token_hash IS NOT NULL;
