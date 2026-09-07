@@ -1,25 +1,20 @@
-# Bahrem Burger & Grill — Fila Pro 3.4
+# Bahrem Fila Pro — v3.7
 
-## Novidades da 3.4
-- Cliente recebe token individual para acompanhar a senha.
-- A senha é salva no navegador e pode ser recuperada após atualizar/fechar e reabrir a página.
-- Página inicial mostra “Acompanhar minha senha” quando existe um atendimento salvo no aparelho.
-- Página da senha mostra posição atual, quantidade de senhas à frente e total da categoria.
-- Quando a posição chega a 1, aparece “VOCÊ É O PRÓXIMO A SER CHAMADO!”.
-- A posição é recalculada no servidor e respeita prioridade + ordem de chegada dentro da categoria.
-- Atualização automática a cada 2 segundos.
-- Comprovante/QR Code individual continua disponível.
-- Administração de usuários e bootstrap de credenciais continuam incluídos.
-- Banco existente é preservado; as migrações necessárias são executadas na inicialização.
+Atualização para operação em monitor de 24"/Full HD e publicidade nas páginas dos clientes.
 
-## Observação sobre a posição
-O painel administrativo chama clientes por categoria (2–3, 4–5, 6–7 e 10+). Por isso a tela do cliente informa a posição dentro da sua categoria. Quando a posição é 1, a mensagem “Você é o próximo a ser chamado” é verdadeira para a próxima chamada daquela categoria.
+## Alterações
+- Monitor usa a altura real da tela (`100dvh`) e não cria rolagem em tela cheia/F11.
+- Monitor mantém visíveis: última chamada, publicidade, filas por categoria, últimas 3 chamadas e rodapé.
+- Categoria **8+ pessoas** substitui **10+**.
+- Banco migra automaticamente tickets antigos da categoria `10` para `8` e atualiza a restrição.
+- Página inicial do cliente exibe a publicidade configurada.
+- Página individual da senha também exibe a publicidade configurada.
+- Player aceita YouTube, YouTube Shorts, Vimeo e arquivos MP4/WebM/OGG.
+- Vídeo tenta iniciar automaticamente sem som; se o navegador bloquear, aparece botão para iniciar.
 
-## Railway
-Variáveis mínimas:
-- DATABASE_URL
-- JWT_SECRET
-- ADMIN_USER
-- ADMIN_PASSWORD
-- PUBLIC_URL (opcional, recomendado para o QR Code)
-- ADMIN_BOOTSTRAP=true somente durante a recuperação de uma credencial existente; depois remova ou mude para false.
+## Deploy
+Substitua os arquivos pelo conteúdo desta versão e faça um novo deploy no Railway.
+Depois, no navegador do monitor, abra `/display.html` e use Ctrl+F5. Pressione F11 para tela cheia.
+
+## Publicidade
+No painel Restaurante, informe o link público do vídeo e salve. O monitor e as páginas do cliente consultam `/api/config` automaticamente.

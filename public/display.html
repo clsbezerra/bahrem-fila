@@ -17,6 +17,22 @@
 .tv-ad-hint{position:absolute;left:10px;right:10px;bottom:8px;z-index:4;text-align:center;font-size:11px;color:#fff;background:rgba(0,0,0,.55);padding:5px 8px;border-radius:8px;pointer-events:none}
 @media(max-width:900px){.tv-layout{grid-template-columns:1fr}.tv-video{min-height:300px}.tv-video iframe,.tv-video video{min-height:300px}}
 
+/* ===== TV 24" — TELA INTEIRA SEM CORTE / SEM ROLAGEM ===== */
+html,body.tv{width:100%;height:100%;min-height:100%;overflow:hidden}
+@media (min-width: 1000px){
+  .tv-screen{width:100vw;height:100dvh;min-height:0;max-height:100dvh;overflow:hidden;padding:1.2vh 1.35vw 0.8vh;gap:1vh}
+  .tv-header{flex:0 0 6.5vh;min-height:0;padding:0 0 1vh}
+  .tv-logo{height:5.4vh;max-width:14vw}.tv-brand{gap:1vw}.tv-brand-name{font-size:clamp(20px,2.1vw,34px)}.tv-brand-sub{font-size:clamp(9px,.75vw,14px)}.tv-live{font-size:clamp(11px,.9vw,16px)}
+  .tv-main{flex:0 0 42vh;min-height:0;height:42vh;grid-template-columns:minmax(0,1.35fr) minmax(300px,.85fr);gap:1vw}
+  .tv-call-card,.tv-ad-card{min-height:0;height:100%}.tv-call-card{border-radius:1.2vw}.tv-section-title{font-size:clamp(12px,1.05vw,20px)}
+  .tv-called-ticket{font-size:clamp(80px,10vw,180px);margin:1vh 0 .5vh}.tv-called-info{font-size:clamp(15px,1.3vw,24px)}.tv-called-time{font-size:clamp(11px,.85vw,16px);margin-top:.6vh}
+  .tv-ad-card{padding:.65vw;border-radius:1.2vw}.tv-ad-label{font-size:clamp(10px,.75vw,14px);padding:.2vh 0 .6vh}.tv-ad-container,.tv-ad-media{min-height:0;height:100%}.tv-ad-container{border-radius:.8vw}.tv-ad-placeholder{min-height:0;font-size:clamp(12px,1vw,18px)}.tv-ad-placeholder strong{font-size:clamp(16px,1.25vw,24px)}.tv-ad-icon{font-size:clamp(32px,3vw,52px)}
+  .tv-waiting{flex:0 0 11.5vh;min-height:0;gap:.5vh}.tv-waiting-grid{gap:.55vw}.tv-waiting-item{padding:.7vh .7vw;min-height:0}.tv-waiting-item span{font-size:clamp(10px,.72vw,13px)}.tv-waiting-item strong{font-size:clamp(20px,1.8vw,32px)}
+  .tv-history{flex:0 0 30.5vh;min-height:0;gap:.5vh}.tv-history-grid{gap:.7vw;min-height:0}.tv-history-item{padding:1vh .9vw;min-height:0;border-radius:1vw}.tv-history-ticket{font-size:clamp(22px,2.1vw,40px)}.tv-history-meta{font-size:clamp(9px,.65vw,13px);gap:.15vh .4vw}.tv-history-meta span:first-child{font-size:clamp(16px,1.3vw,25px)}.tv-history-meta strong{font-size:clamp(14px,1.15vw,22px)}
+  .tv-footer{flex:0 0 5vh;min-height:0;font-size:clamp(9px,.75vw,14px);padding:0}.tv-sound-button{right:0;bottom:0;padding:.45vh .6vw;font-size:clamp(9px,.65vw,12px)}
+  .tv-ad-play{padding:1.2vh 1.1vw;font-size:clamp(14px,1.1vw,20px)}.tv-ad-hint{font-size:clamp(8px,.55vw,11px)}
+}
+
 /* ===== TV 24" / FULL HD (1920x1080) ===== */
 @media (min-width: 1200px) and (min-height: 700px){
   .tv-screen{
@@ -279,7 +295,7 @@
       {key:"23", label:"2–3 pessoas"},
       {key:"45", label:"4–5 pessoas"},
       {key:"67", label:"6–7 pessoas"},
-      {key:"10", label:"10+ pessoas"}
+      {key:"8", label:"8+ pessoas"}
     ];
     $("waitingList").innerHTML = categories.map(c=>{
       const list = waiting.filter(x=>String(x.category)===c.key);

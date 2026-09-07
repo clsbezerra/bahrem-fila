@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS tickets (
   ticket TEXT UNIQUE NOT NULL,
   public_token_hash TEXT,
   people_count INTEGER NOT NULL CHECK (people_count >= 2),
-  category TEXT NOT NULL CHECK (category IN ('23','45','67','10')),
+  category TEXT NOT NULL CHECK (category IN ('23','45','67','8')),
   priority BOOLEAN NOT NULL DEFAULT FALSE,
   priority_reason TEXT,
   status TEXT NOT NULL DEFAULT 'waiting' CHECK (status IN ('waiting','called','cancelled','served')),

@@ -24,6 +24,13 @@ async function init(){
   await pool.query("ALTER TABLE admins ADD COLUMN IF NOT EXISTS active BOOLEAN NOT NULL DEFAULT TRUE");
   await pool.query("ALTER TABLE tickets ADD COLUMN IF NOT EXISTS public_token_hash TEXT");
   await pool.query("CREATE UNIQUE INDEX IF NOT EXISTS idx_tickets_public_token_hash ON tickets(public_token_hash) WHERE public_token_hash IS NOT NULL");
+  // Migração da categoria antiga 10+ para 8+.
+  await pool.query(`DO $$ DECLARE c text; BEGIN
+    SELECT conname INTO c FROM pg_constraint WHERE conrelid='tickets'::regclass AND contype='c' AND pg_get_constraintdef(oid) ILIKE '%category%' LIMIT 1;
+    IF c IS NOT NULL THEN EXECUTE format('ALTER TABLE tickets DROP CONSTRAINT %I', c); END IF;
+    UPDATE tickets SET category='8' WHERE category='10';
+    ALTER TABLE tickets ADD CONSTRAINT tickets_category_check_v2 CHECK (category IN ('23','45','67','8'));
+  EXCEPTION WHEN duplicate_object THEN NULL; END $$;`);
   await pool.query(`CREATE TABLE IF NOT EXISTS app_settings (key TEXT PRIMARY KEY, value TEXT, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`);
 
   const bootstrap=String(process.env.ADMIN_BOOTSTRAP||"").toLowerCase()==="true";
@@ -41,7 +48,7 @@ async function init(){
   }
 }
 
-function cat(count){if(count>=2&&count<=3)return"23";if(count>=4&&count<=5)return"45";if(count>=6&&count<=7)return"67";if(count>=10)return"10";return null}
+function cat(count){if(count>=2&&count<=3)return"23";if(count>=4&&count<=5)return"45";if(count>=6&&count<=7)return"67";if(count>=8)return"8";return null}
 function tokenFor(admin){return jwt.sign({id:admin.id,username:admin.username},JWT_SECRET,{expiresIn:"12h"})}
 function auth(req,res,next){try{req.admin=jwt.verify((req.headers.authorization||"").replace("Bearer ",""),JWT_SECRET);next()}catch{return res.status(401).json({error:"Não autorizado"})}}
 
@@ -105,7 +112,7 @@ app.get("/api/state",async(req,res)=>{res.json(await getState())});
 
 app.post("/api/tickets",async(req,res)=>{
   const count=Number(req.body.count),category=cat(count),priority=!!req.body.priority;
-  if(!category)return res.status(400).json({error:"Quantidade inválida. Use 2–3, 4–5, 6–7 ou 10+."});
+  if(!category)return res.status(400).json({error:"Quantidade inválida. Use 2–3, 4–5, 6–7 ou 8+."});
   const reason=priority?(req.body.priorityReason==="idoso"?"60+ anos":"Pessoa com deficiência/necessidade especial"):null;
   const publicToken=crypto.randomBytes(32).toString("hex");
   const publicTokenHash=crypto.createHash("sha256").update(publicToken).digest("hex");
