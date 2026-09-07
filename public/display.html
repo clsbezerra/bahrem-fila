@@ -4,349 +4,114 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bahrem — Monitor</title><link rel="stylesheet" href="/styles.css">
 <style>
-.tv-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,.8fr);gap:22px;align-items:stretch}
-.tv-video{min-height:420px;border:2px solid #26352b;border-radius:22px;overflow:hidden;background:#090b0a;position:relative;display:flex;align-items:center;justify-content:center}
-.tv-video iframe,.tv-video video{width:100%;height:100%;min-height:420px;border:0;object-fit:cover}
-.tv-video-empty{padding:30px;text-align:center;color:#aaa}
-.tv-video-empty strong{display:block;color:#fff;font-size:22px;margin-bottom:8px}
-.sound-control{position:fixed;right:20px;bottom:18px;z-index:20;border:0;border-radius:999px;padding:12px 18px;font-weight:800;cursor:pointer}
-.sound-control.ready{opacity:.75}
-.call-flash{animation:callFlash .8s ease 2}
-@keyframes callFlash{50%{transform:scale(1.015);filter:brightness(1.45)}}
-.tv-ad-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;border:0;border-radius:999px;padding:16px 24px;font-size:20px;font-weight:900;cursor:pointer;background:#69e58f;color:#07100a;box-shadow:0 8px 30px rgba(0,0,0,.4)}
-.tv-ad-hint{position:absolute;left:10px;right:10px;bottom:8px;z-index:4;text-align:center;font-size:11px;color:#fff;background:rgba(0,0,0,.55);padding:5px 8px;border-radius:8px;pointer-events:none}
-@media(max-width:900px){.tv-layout{grid-template-columns:1fr}.tv-video{min-height:300px}.tv-video iframe,.tv-video video{min-height:300px}}
-
-/* ===== TV 24" — TELA INTEIRA SEM CORTE / SEM ROLAGEM ===== */
-html,body.tv{width:100%;height:100%;min-height:100%;overflow:hidden}
-@media (min-width: 1000px){
-  .tv-screen{width:100vw;height:100dvh;min-height:0;max-height:100dvh;overflow:hidden;padding:1.2vh 1.35vw 0.8vh;gap:1vh}
-  .tv-header{flex:0 0 6.5vh;min-height:0;padding:0 0 1vh}
-  .tv-logo{height:5.4vh;max-width:14vw}.tv-brand{gap:1vw}.tv-brand-name{font-size:clamp(20px,2.1vw,34px)}.tv-brand-sub{font-size:clamp(9px,.75vw,14px)}.tv-live{font-size:clamp(11px,.9vw,16px)}
-  .tv-main{flex:0 0 42vh;min-height:0;height:42vh;grid-template-columns:minmax(0,1.35fr) minmax(300px,.85fr);gap:1vw}
-  .tv-call-card,.tv-ad-card{min-height:0;height:100%}.tv-call-card{border-radius:1.2vw}.tv-section-title{font-size:clamp(12px,1.05vw,20px)}
-  .tv-called-ticket{font-size:clamp(80px,10vw,180px);margin:1vh 0 .5vh}.tv-called-info{font-size:clamp(15px,1.3vw,24px)}.tv-called-time{font-size:clamp(11px,.85vw,16px);margin-top:.6vh}
-  .tv-ad-card{padding:.65vw;border-radius:1.2vw}.tv-ad-label{font-size:clamp(10px,.75vw,14px);padding:.2vh 0 .6vh}.tv-ad-container,.tv-ad-media{min-height:0;height:100%}.tv-ad-container{border-radius:.8vw}.tv-ad-placeholder{min-height:0;font-size:clamp(12px,1vw,18px)}.tv-ad-placeholder strong{font-size:clamp(16px,1.25vw,24px)}.tv-ad-icon{font-size:clamp(32px,3vw,52px)}
-  .tv-waiting{flex:0 0 11.5vh;min-height:0;gap:.5vh}.tv-waiting-grid{gap:.55vw}.tv-waiting-item{padding:.7vh .7vw;min-height:0}.tv-waiting-item span{font-size:clamp(10px,.72vw,13px)}.tv-waiting-item strong{font-size:clamp(20px,1.8vw,32px)}
-  .tv-history{flex:0 0 30.5vh;min-height:0;gap:.5vh}.tv-history-grid{gap:.7vw;min-height:0}.tv-history-item{padding:1vh .9vw;min-height:0;border-radius:1vw}.tv-history-ticket{font-size:clamp(22px,2.1vw,40px)}.tv-history-meta{font-size:clamp(9px,.65vw,13px);gap:.15vh .4vw}.tv-history-meta span:first-child{font-size:clamp(16px,1.3vw,25px)}.tv-history-meta strong{font-size:clamp(14px,1.15vw,22px)}
-  .tv-footer{flex:0 0 5vh;min-height:0;font-size:clamp(9px,.75vw,14px);padding:0}.tv-sound-button{right:0;bottom:0;padding:.45vh .6vw;font-size:clamp(9px,.65vw,12px)}
-  .tv-ad-play{padding:1.2vh 1.1vw;font-size:clamp(14px,1.1vw,20px)}.tv-ad-hint{font-size:clamp(8px,.55vw,11px)}
-}
-
-/* ===== TV 24" / FULL HD (1920x1080) ===== */
-@media (min-width: 1200px) and (min-height: 700px){
-  .tv-screen{
-    width:100vw;
-    height:100vh;
-    min-height:0;
-    padding:16px 24px 10px;
-    gap:10px;
-    overflow:hidden;
-  }
-  .tv-header{flex:0 0 66px;padding:2px 6px 10px}
-  .tv-logo{height:52px;max-width:190px}
-  .tv-brand{gap:12px}
-  .tv-brand-name{font-size:28px}
-  .tv-brand-sub{font-size:11px;letter-spacing:4px}
-  .tv-live{font-size:13px}
-  .tv-main{flex:0 0 510px;min-height:0;grid-template-columns:minmax(0,1.42fr) minmax(360px,.78fr);gap:14px}
-  .tv-call-card{min-height:0;border-radius:18px}
-  .tv-section-title{font-size:16px;letter-spacing:1.5px}
-  .tv-called-ticket{font-size:clamp(100px,10vw,170px);margin:10px 0 4px}
-  .tv-called-info{font-size:19px}
-  .tv-called-time{font-size:14px;margin-top:7px}
-  .tv-ad-card{padding:10px;border-radius:18px}
-  .tv-ad-label{font-size:12px;padding:2px 0 7px}
-  .tv-ad-container,.tv-ad-media{min-height:0;height:100%}
-  .tv-waiting{flex:0 0 76px;min-height:0;gap:5px}
-  .tv-waiting-grid{gap:8px}.tv-waiting-item{padding:7px 12px}.tv-waiting-item span{font-size:13px}.tv-waiting-item strong{font-size:25px}
-  .tv-history{flex:0 0 150px;min-height:0;gap:6px}
-  .tv-history-grid{gap:10px;min-height:0;flex:1}
-  .tv-history-item{padding:12px 16px;border-radius:16px;min-height:0}
-  .tv-history-ticket{font-size:30px}
-  .tv-history-meta{font-size:11px;gap:1px 7px}
-  .tv-history-meta span:first-child{font-size:21px}
-  .tv-history-meta strong{font-size:18px}
-  .tv-footer{flex:0 0 32px;min-height:32px;font-size:13px}
-  .tv-sound-button{right:0;bottom:-1px;padding:6px 10px;font-size:12px}
-}
-/* 24" displays with less vertical resolution: never create page scroll */
-@media (min-width: 1200px) and (max-height: 850px){
-  .tv-screen{padding:10px 18px 6px;gap:7px}
-  .tv-header{flex-basis:56px;padding-bottom:7px}
-  .tv-logo{height:44px}.tv-brand-name{font-size:24px}
-  .tv-main{flex-basis:430px;gap:10px}
-  .tv-called-ticket{font-size:clamp(90px,9vw,145px);margin:6px 0 2px}
-  .tv-waiting{flex-basis:66px}
-  .tv-history{flex-basis:145px}
-  .tv-history-item{padding:9px 12px}
-  .tv-history-ticket{font-size:26px}
-  .tv-footer{flex-basis:26px;min-height:26px;font-size:11px}
-}
-
+:root{--green:#63e83f;--green2:#35b94d;--deep:#06100a;--panel:#07130d;--line:#1d9b49;--text:#f5f7f4}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#030806;color:var(--text);font-family:Arial,Helvetica,sans-serif}
+body.tv{background:radial-gradient(circle at 50% 35%,#0b1c11 0,#030806 62%,#020504 100%)}
+.tv-screen{width:100vw;height:100dvh;padding:14px 22px 12px;display:grid;grid-template-rows:72px minmax(0,1fr) 165px;gap:12px;overflow:hidden;position:relative}
+.tv-screen:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(125deg,rgba(40,180,65,.10),transparent 24%,transparent 76%,rgba(40,180,65,.06))}
+.tv-header{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #277e43;padding:0 4px 10px;min-height:0}
+.tv-brand{display:flex;align-items:center;height:100%}.tv-logo{height:64px;width:112px;object-fit:contain;object-position:center;border-radius:8px;filter:drop-shadow(0 0 12px rgba(99,232,63,.24));background:#161719}.tv-brand-name,.tv-brand-sub{display:none}
+.tv-live{font-size:14px;font-weight:900;letter-spacing:1.8px}.tv-live-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#4ce67d;margin-right:8px;box-shadow:0 0 14px #4ce67d}
+.tv-main{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.42fr) minmax(400px,.78fr);gap:14px;min-height:0}
+.tv-ad-card,.tv-call-card,.tv-history{border:1px solid #198c45;background:linear-gradient(145deg,rgba(8,25,15,.96),rgba(3,10,7,.96));box-shadow:inset 0 0 30px rgba(41,190,76,.045),0 0 18px rgba(22,125,56,.12);border-radius:18px;overflow:hidden}
+.tv-ad-card{display:flex;flex-direction:column;min-height:0;padding:9px}.tv-ad-label,.tv-section-title{font-weight:900;letter-spacing:1.8px;color:#71ed78;font-size:14px;text-align:center;padding:2px 0 7px;flex:0 0 auto}.tv-ad-container{position:relative;flex:1;min-height:0;border-radius:11px;overflow:hidden;background:#020403;display:flex;align-items:center;justify-content:center}.tv-ad-media{width:100%;height:100%;border:0;object-fit:cover;background:#020403}.tv-ad-placeholder{height:100%;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#cdd5ce;text-align:center}.tv-ad-placeholder strong{font-size:20px;color:#fff}.tv-ad-icon{font-size:44px}.tv-ad-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;border:1px solid #a0f3a0;border-radius:999px;padding:12px 20px;font-size:18px;font-weight:900;cursor:pointer;background:#69e58f;color:#061009;box-shadow:0 8px 28px rgba(0,0,0,.55)}.tv-ad-hint{position:absolute;left:8px;right:8px;bottom:7px;z-index:4;text-align:center;font-size:10px;color:#fff;background:rgba(0,0,0,.55);padding:5px 8px;border-radius:7px;pointer-events:none}
+.tv-right{display:grid;grid-template-rows:minmax(0,1.35fr) minmax(0,1fr);gap:12px;min-height:0}.tv-call-card{min-height:0;display:flex;flex-direction:column;justify-content:center;text-align:center;padding:12px}.tv-call-card .tv-section-title{font-size:17px}.tv-called-ticket{font-size:clamp(96px,9vw,178px);line-height:.86;font-weight:950;letter-spacing:5px;margin:12px 0 8px;color:#f4f8f2;text-shadow:0 0 12px rgba(101,235,117,.3),0 0 35px rgba(64,220,91,.15)}.tv-called-info{font-size:clamp(17px,1.3vw,25px);font-weight:900}.tv-called-time{font-size:13px;color:#9daaa1;margin-top:8px}.tv-call-pulse{animation:tvPulse .9s ease 2}@keyframes tvPulse{50%{transform:scale(1.012);box-shadow:0 0 38px rgba(83,235,101,.32),inset 0 0 35px rgba(83,235,101,.12)}}
+.tv-history{min-height:0;padding:10px;display:flex;flex-direction:column}.tv-history .tv-section-title{text-align:left;padding:1px 5px 7px}.tv-history-grid{display:grid;grid-template-columns:1fr;grid-template-rows:repeat(3,minmax(0,1fr));gap:7px;min-height:0;flex:1}.tv-history-item{min-height:0;border:1px solid #164f2d;border-radius:10px;background:rgba(5,23,13,.9);display:flex;align-items:center;justify-content:space-between;padding:5px 10px;gap:10px}.tv-history-ticket{font-size:clamp(22px,2vw,34px);font-weight:950;color:#70ed77;letter-spacing:2px}.tv-history-meta{display:grid;grid-template-columns:auto auto;align-items:center;gap:1px 7px;text-align:right;color:#aeb8b0;font-size:10px}.tv-history-meta span:first-child{grid-row:1/3;color:#70ed77;font-size:20px}.tv-history-meta strong{color:#70ed77;font-size:16px}.tv-history-empty{height:100%;display:flex;align-items:center;justify-content:center;color:#7e8981;font-size:13px}
+.tv-waiting{position:relative;z-index:1;min-height:0;border:1px solid #198c45;border-radius:16px;background:linear-gradient(145deg,rgba(8,25,15,.96),rgba(3,10,7,.96));padding:9px 12px;display:flex;flex-direction:column;gap:6px}.tv-waiting .tv-section-title{text-align:left;padding:0 5px}.tv-waiting-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;min-height:0;flex:1}.tv-waiting-item{border:1px solid #155f32;border-radius:10px;background:rgba(3,18,9,.85);display:flex;align-items:center;justify-content:space-between;padding:6px 12px;min-width:0}.tv-waiting-item div{min-width:0}.tv-waiting-item span{display:block;font-size:13px;font-weight:800;color:#eaf0eb;white-space:nowrap}.tv-waiting-item small{display:block;color:#819087;font-size:9px;margin-top:2px;white-space:nowrap}.tv-waiting-item strong{font-size:clamp(24px,2vw,34px);color:#6bea76;line-height:1}
+.tv-footer{display:none}.tv-sound-button{position:fixed;right:22px;top:16px;z-index:20;border:1px solid #2b9850;background:rgba(5,23,12,.92);color:#eff8f0;border-radius:999px;padding:9px 15px;font-size:12px;font-weight:900;cursor:pointer}.tv-sound-button.active{border-color:#70ed77;box-shadow:0 0 16px rgba(85,232,105,.2)}
+@media(max-width:1199px){.tv-screen{grid-template-rows:62px minmax(0,1fr) 145px;padding:10px;gap:9px}.tv-main{grid-template-columns:minmax(0,1.3fr) minmax(320px,.8fr)}.tv-logo{height:54px;width:94px}.tv-called-ticket{font-size:clamp(80px,10vw,140px)}.tv-waiting-item{padding:5px 8px}.tv-waiting-item span{font-size:11px}.tv-waiting-item small{font-size:8px}}
+@media(max-height:850px) and (min-width:900px){.tv-screen{grid-template-rows:58px minmax(0,1fr) 126px;padding:8px 14px 8px;gap:8px}.tv-logo{height:50px;width:88px}.tv-main{gap:10px}.tv-right{gap:8px}.tv-ad-card{padding:7px}.tv-ad-label,.tv-section-title{font-size:12px;padding-bottom:4px}.tv-call-card{padding:8px}.tv-called-ticket{font-size:clamp(72px,8vw,120px);margin:7px 0 4px}.tv-called-info{font-size:16px}.tv-history{padding:7px}.tv-history-item{padding:4px 8px}.tv-history-ticket{font-size:24px}.tv-waiting{padding:6px 9px}.tv-waiting-item{padding:4px 7px}.tv-waiting-item span{font-size:10px}.tv-waiting-item small{display:none}.tv-waiting-item strong{font-size:23px}}
+@media(max-width:760px){html,body.tv{overflow:auto}.tv-screen{height:auto;min-height:100vh;grid-template-rows:auto auto auto;overflow:visible}.tv-main{grid-template-columns:1fr}.tv-right{grid-template-rows:360px auto}.tv-waiting-grid{grid-template-columns:repeat(2,1fr)}.tv-logo{width:90px}.tv-sound-button{top:8px;right:8px}}
 </style>
 </head>
 <body class="tv">
 
 <div id="tvScreen" class="tv-screen">
   <header class="tv-header">
-    <div class="tv-brand">
-      <img src="/logo.jpg" alt="Bahrem Burger & Grill" class="tv-logo">
-      <div>
-        <div class="tv-brand-name">BAHREM</div>
-        <div class="tv-brand-sub">BURGER &amp; GRILL</div>
-      </div>
-    </div>
+    <div class="tv-brand"><img src="/logo.jpg" alt="Bahrem" class="tv-logo"></div>
     <div class="tv-live"><span class="tv-live-dot"></span> ATENDIMENTO</div>
   </header>
 
   <main class="tv-main">
-    <section class="tv-call-card">
-      <div class="tv-section-title">ÚLTIMA SENHA CHAMADA</div>
-      <div id="calledTicket" class="tv-called-ticket">---</div>
-      <div id="calledInfo" class="tv-called-info">Aguardando próxima chamada</div>
-      <div id="calledTime" class="tv-called-time"></div>
+    <section class="tv-ad-card">
+      <div class="tv-ad-label">PUBLICIDADE</div>
+      <div id="adContainer" class="tv-ad-container"><div class="tv-ad-placeholder"><div class="tv-ad-icon">📺</div><strong>Carregando publicidade...</strong></div></div>
     </section>
 
-    <aside class="tv-ad-card">
-      <div class="tv-ad-label">PUBLICIDADE</div>
-      <div id="adContainer" class="tv-ad-container">
-        <div class="tv-ad-placeholder">Carregando publicidade...</div>
+    <section class="tv-right">
+      <div id="callCard" class="tv-call-card">
+        <div class="tv-section-title">🔔 ÚLTIMA SENHA CHAMADA</div>
+        <div id="calledTicket" class="tv-called-ticket">---</div>
+        <div id="calledInfo" class="tv-called-info">Aguardando próxima chamada</div>
+        <div id="calledTime" class="tv-called-time"></div>
       </div>
-    </aside>
+      <section class="tv-history">
+        <div class="tv-section-title">🕘 ÚLTIMAS 3 SENHAS CHAMADAS</div>
+        <div id="historyList" class="tv-history-grid"><div class="tv-history-empty">Nenhuma senha chamada ainda.</div></div>
+      </section>
+    </section>
   </main>
 
   <section class="tv-waiting">
-    <div class="tv-section-title">PESSOAS AGUARDANDO</div>
+    <div class="tv-section-title">👥 PESSOAS AGUARDANDO</div>
     <div id="waitingList" class="tv-waiting-grid"></div>
   </section>
-
-  <section class="tv-history">
-    <div class="tv-section-title">ÚLTIMAS 3 SENHAS CHAMADAS</div>
-    <div id="historyList" class="tv-history-grid"></div>
-  </section>
-
-  <footer class="tv-footer">
-    <span>🔔</span>
-    <span>Acompanhe sua senha no painel. Em breve será a sua vez!</span>
-    <button id="soundButton" class="tv-sound-button" type="button">🔊 Ativar som</button>
-  </footer>
+  <button id="soundButton" class="tv-sound-button" type="button">🔊 Ativar som</button>
 </div>
 <script>
 (function(){
-  let lastCalledId = null;
-  let audioReady = false;
-  let adUrl = "";
-  let adSignature = "";
-  let refreshTimer = null;
-  let audioCtx = null;
+  let lastCalledId=null, audioReady=false, audioCtx=null, adSignature="";
+  const $=id=>document.getElementById(id);
+  const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
 
-  const $ = id => document.getElementById(id);
-
-  function escapeHtml(v){
-    return String(v ?? "").replace(/[&<>"']/g, c => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-    }[c]));
-  }
-
-  function normalizeVideoUrl(url){
-    if(!url) return null;
-    url = String(url).trim();
-    if(!url) return null;
-
-    // YouTube: watch, short, shorts e youtu.be
-    let m = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/i);
-    if(m) return {type:"iframe", src:"https://www.youtube-nocookie.com/embed/"+m[1]+"?autoplay=1&mute=1&playsinline=1&loop=1&playlist="+m[1]+"&controls=1&rel=0&modestbranding=1"};
-
-    // Vimeo
-    m = url.match(/vimeo\.com\/(?:video\/)?(\d+)/i);
-    if(m) return {type:"iframe", src:"https://player.vimeo.com/video/"+m[1]+"?autoplay=1&muted=1&loop=1&background=1&playsinline=1"};
-
-    // Arquivo de vídeo direto
-    if(/\.(mp4|webm|ogg|m4v)(?:[?#].*)?$/i.test(url)) return {type:"video", src:url};
-
-    // Permite URLs de players externos que aceitem iframe.
-    return {type:"iframe", src:url};
-  }
-
-  function showAdMessage(title, text){
-    $("adContainer").innerHTML = '<div class="tv-ad-placeholder"><div class="tv-ad-icon">📺</div><strong>'+escapeHtml(title)+'</strong><span>'+escapeHtml(text)+'</span></div>';
-  }
-
-  async function renderAd(url){
-    const c = $("adContainer");
-    const v = normalizeVideoUrl(url);
-    if(!v){
-      showAdMessage("BAHREM BURGER & GRILL", "Aguarde sua chamada");
-      return;
+  function videoInfo(raw){
+    const value=String(raw||"").trim(); if(!value) return null;
+    let u; try{u=new URL(value)}catch{return null}
+    const host=u.hostname.replace(/^www\./,"").toLowerCase();
+    let id="";
+    if(host==="youtu.be") id=u.pathname.split("/").filter(Boolean)[0]||"";
+    else if(host.endsWith("youtube.com")){id=u.searchParams.get("v")||((u.pathname.match(/\/(?:shorts|embed)\/([^/?]+)/i)||[])[1]||"")}
+    if(id){
+      const src=`https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&mute=1&playsinline=1&loop=1&playlist=${encodeURIComponent(id)}&controls=1&rel=0&modestbranding=1&enablejsapi=1&origin=${encodeURIComponent(location.origin)}`;
+      return {type:"iframe",src};
     }
-
-    if(v.type === "video"){
-      c.innerHTML = '<video id="adVideo" class="tv-ad-media" src="'+escapeHtml(v.src)+'" autoplay muted loop playsinline preload="auto" controls></video>'+
-        '<button id="adPlay" class="tv-ad-play" type="button">▶ Reproduzir</button>';
-      const video=$("adVideo"), play=$("adPlay");
-      const tryPlay=()=>video.play().then(()=>{play.style.display="none"}).catch(()=>{play.style.display="block"});
-      video.addEventListener("error",()=>showAdMessage("Não foi possível abrir o vídeo", "Confira se o link é um arquivo MP4/WebM/OGG público."));
-      video.addEventListener("playing",()=>{play.style.display="none"});
-      play.addEventListener("click",()=>tryPlay());
-      tryPlay();
-      return;
+    if(host.endsWith("vimeo.com")){
+      const m=u.pathname.match(/\/video\/(\d+)|\/(\d+)/); if(m){return {type:"iframe",src:`https://player.vimeo.com/video/${m[1]||m[2]}?autoplay=1&muted=1&loop=1&background=1&playsinline=1`}}
     }
-
-    c.innerHTML = '<iframe id="adFrame" class="tv-ad-media" src="'+escapeHtml(v.src)+'" title="Publicidade" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen frameborder="0"></iframe>'+
-      '<button id="adFramePlay" class="tv-ad-play" type="button">▶ Iniciar publicidade</button>'+
-      '<div class="tv-ad-hint">O vídeo inicia sem som. Se não iniciar sozinho, use o botão.</div>';
-    const frame=$("adFrame"), play=$("adFramePlay");
-    play.addEventListener("click",()=>{
-      try{
-        const u=new URL(v.src, location.href);
-        u.searchParams.set("autoplay","1");
-        u.searchParams.set("mute","1");
-        frame.src=u.toString();
-        play.textContent="▶ Publicidade iniciada";
-        setTimeout(()=>play.style.display="none",1200);
-      }catch(e){}
-    });
+    if(/\.(mp4|webm|ogg|m4v)(?:[?#].*)?$/i.test(u.pathname)) return {type:"video",src:u.href};
+    return {type:"iframe",src:value};
   }
 
-  async function loadAd(){
-    try{
-      const r = await fetch("/api/config", {cache:"no-store"});
-      if(!r.ok) return;
-      const data = await r.json();
-      const url = data.videoUrl || "";
-      const sig = JSON.stringify(data);
-      if(sig !== adSignature){
-        adSignature = sig;
-        adUrl = url;
-        renderAd(url);
-      }
-    }catch(e){}
-  }
-
-  async function unlockAudio(){
-    try{
-      const Ctx = window.AudioContext || window.webkitAudioContext;
-      if(!Ctx) { audioReady=true; return; }
-      if(!audioCtx) audioCtx = new Ctx();
-      if(audioCtx.state === "suspended") await audioCtx.resume();
-      const o = audioCtx.createOscillator();
-      const g = audioCtx.createGain();
-      o.type = "sine";
-      o.frequency.value = 880;
-      g.gain.value = 0.00001;
-      o.connect(g); g.connect(audioCtx.destination);
-      o.start(); o.stop(audioCtx.currentTime + 0.025);
-      audioReady = true;
-      $("soundButton").textContent = "🔊 Som ativado";
-      $("soundButton").classList.add("active");
-    }catch(e){
-      console.warn("Áudio não pôde ser ativado", e);
+  function adMessage(title,text){$("adContainer").innerHTML=`<div class="tv-ad-placeholder"><div class="tv-ad-icon">📺</div><strong>${esc(title)}</strong><span>${esc(text)}</span></div>`}
+  function renderAd(url){
+    const v=videoInfo(url); if(!v){adMessage("Publicidade não configurada","O restaurante ainda não cadastrou um vídeo.");return}
+    const c=$("adContainer");
+    if(v.type==="video"){
+      c.innerHTML=`<video id="adVideo" class="tv-ad-media" src="${esc(v.src)}" autoplay muted loop playsinline preload="auto" controls></video><button id="adPlay" class="tv-ad-play" type="button">▶ Reproduzir</button>`;
+      const el=$("adVideo"),btn=$("adPlay");
+      const play=()=>el.play().then(()=>btn.style.display="none").catch(()=>btn.style.display="block");
+      el.addEventListener("playing",()=>btn.style.display="none");el.addEventListener("error",()=>adMessage("Não foi possível abrir o vídeo","Verifique se o arquivo está público e termina em .mp4, .webm ou .ogg."));btn.onclick=play;play();return;
     }
+    c.innerHTML=`<iframe id="adFrame" class="tv-ad-media" src="${esc(v.src)}" title="Publicidade" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe><button id="adFramePlay" class="tv-ad-play" type="button">▶ Iniciar publicidade</button><div class="tv-ad-hint">Se o vídeo não iniciar sozinho, toque em “Iniciar publicidade”.</div>`;
+    const frame=$("adFrame"),btn=$("adFramePlay");
+    frame.addEventListener("load",()=>setTimeout(()=>{btn.style.display="none"},1500));
+    btn.onclick=()=>{try{const u=new URL(frame.src);u.searchParams.set("autoplay","1");u.searchParams.set("mute","1");frame.src=u.toString();btn.style.display="none"}catch{}};
   }
+  async function loadAd(){try{const r=await fetch('/api/config',{cache:'no-store'});if(!r.ok)return;const d=await r.json();const sig=String(d.videoUrl||'');if(sig!==adSignature){adSignature=sig;renderAd(sig)}}catch{}}
 
-  function dingDong(){
-    if(!audioReady || !audioCtx) return;
-    try{
-      if(audioCtx.state === "suspended") audioCtx.resume();
-      const now = audioCtx.currentTime + 0.02;
-      function tone(freq, start, duration, volume){
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(freq, start);
-        gain.gain.setValueAtTime(0.0001, start);
-        gain.gain.exponentialRampToValueAtTime(volume, start + 0.015);
-        gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
-        osc.connect(gain); gain.connect(audioCtx.destination);
-        osc.start(start); osc.stop(start + duration + 0.03);
-      }
-      tone(1046.5, now, 0.42, 0.20);
-      tone(659.3, now + 0.38, 0.58, 0.24);
-    }catch(e){ console.warn("Falha ao tocar campainha", e); }
-  }
-
-  function flashCall(){
-    const card = $("calledTicket").closest(".tv-call-card");
-    card.classList.remove("tv-call-pulse");
-    void card.offsetWidth;
-    card.classList.add("tv-call-pulse");
-  }
+  async function unlockAudio(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C){audioReady=true;return}if(!audioCtx)audioCtx=new C();if(audioCtx.state==='suspended')await audioCtx.resume();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=880;g.gain.value=.00001;o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+.02);audioReady=true;$("soundButton").textContent='🔊 Som ativado';$("soundButton").classList.add('active')}catch(e){console.warn(e)}}
+  function dingDong(){if(!audioReady||!audioCtx)return;const now=audioCtx.currentTime+.02;function tone(freq,start,dur,vol){const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.setValueAtTime(freq,start);g.gain.setValueAtTime(.0001,start);g.gain.exponentialRampToValueAtTime(vol,start+.015);g.gain.exponentialRampToValueAtTime(.0001,start+dur);o.connect(g);g.connect(audioCtx.destination);o.start(start);o.stop(start+dur+.03)}tone(1046.5,now,.42,.2);tone(659.3,now+.38,.58,.24)}
 
   function renderState(state){
-    const calls = Array.isArray(state.called) ? state.called : [];
-    const called = calls[0] || (Array.isArray(state.history) ? state.history[0] : null) || state.lastCalled || null;
-    const history = Array.isArray(state.history) ? state.history.slice(0,3) : calls.slice(0,3);
-    if(called){
-      $("calledTicket").textContent = called.ticket || "---";
-      $("calledInfo").textContent = called.priority ? "ATENDIMENTO PREFERENCIAL" : "Dirija-se ao atendimento";
-      const d = called.called_at || called.calledAt;
-      $("calledTime").textContent = d ? "Chamado às " + new Date(d).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}) : "";
-      const id = called.id || called.ticket;
-      if(lastCalledId !== null && id !== lastCalledId){
-        dingDong();
-        flashCall();
-      }
-      lastCalledId = id;
-    }
-
-    const waiting = Array.isArray(state.waiting) ? state.waiting : [];
-    const categories = [
-      {key:"23", label:"2–3 pessoas"},
-      {key:"45", label:"4–5 pessoas"},
-      {key:"67", label:"6–7 pessoas"},
-      {key:"8", label:"8+ pessoas"}
-    ];
-    $("waitingList").innerHTML = categories.map(c=>{
-      const list = waiting.filter(x=>String(x.category)===c.key);
-      const priority = list.filter(x=>x.priority).length;
-      return '<div class="tv-waiting-item">'+
-        '<div><span>'+c.label+'</span><small>'+ (priority ? priority+' preferencial(is)' : 'aguardando atendimento') +'</small></div>'+
-        '<strong>'+list.length+'</strong>'+
-      '</div>';
-    }).join("");
-
-    $("historyList").innerHTML = history.slice(0,3).map((x,i)=>{
-      const d = x.called_at || x.calledAt;
-      const elapsed = d ? Math.max(0, Math.floor((Date.now()-new Date(d).getTime())/60000)) : 0;
-      return '<div class="tv-history-item">'+
-        '<div class="tv-history-ticket">'+escapeHtml(x.ticket || "---")+'</div>'+
-        '<div class="tv-history-meta"><span>⏱</span><span>Tempo decorrido</span><strong>'+elapsed+' min</strong></div>'+
-      '</div>';
-    }).join("");
+    const calls=Array.isArray(state.called)?state.called:[];const called=calls[0]||null;const waiting=Array.isArray(state.waiting)?state.waiting:[];
+    if(called){$("calledTicket").textContent=called.ticket||'---';$("calledInfo").textContent=called.priority?'⭐ ATENDIMENTO PREFERENCIAL':'Dirija-se ao atendimento';const d=called.called_at;if(d)$("calledTime").textContent='Chamado às '+new Date(d).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});const id=called.id||called.ticket;if(lastCalledId!==null&&id!==lastCalledId){dingDong();const card=$("callCard");card.classList.remove('tv-call-pulse');void card.offsetWidth;card.classList.add('tv-call-pulse')}lastCalledId=id}
+    const cats=[['23','2–3'],['45','4–5'],['67','6–7'],['8','8+']];
+    $("waitingList").innerHTML=cats.map(([key,label])=>{const list=waiting.filter(x=>String(x.category)===key);const pref=list.filter(x=>x.priority).length;return `<div class="tv-waiting-item"><div><span>${label} pessoas</span><small>${pref?pref+' preferencial(is) · ':''}aguardando</small></div><strong>${list.length}</strong></div>`}).join('')+`<div class="tv-waiting-item"><div><span>⭐ Preferenciais</span><small>total aguardando</small></div><strong>${waiting.filter(x=>x.priority).length}</strong></div>`;
+    const hist=calls.slice(0,3);$("historyList").innerHTML=hist.length?hist.map(x=>{const d=x.called_at;const mins=d?Math.max(0,Math.floor((Date.now()-new Date(d).getTime())/60000)):0;return `<div class="tv-history-item"><div class="tv-history-ticket">${esc(x.ticket)}</div><div class="tv-history-meta"><span>⏱</span><span>Tempo decorrido</span><strong>${mins} min</strong></div></div>`}).join(''):'<div class="tv-history-empty">Nenhuma senha chamada ainda.</div>';
   }
-
-  async function loadState(){
-    try{
-      const r = await fetch("/api/state", {cache:"no-store"});
-      if(!r.ok) return;
-      renderState(await r.json());
-    }catch(e){}
-  }
-
-  $("soundButton").addEventListener("click", unlockAudio);
-  window.addEventListener("pointerdown", function(){ if(!audioReady) unlockAudio(); }, {once:true});
-
-  // Sincronização em tempo real: o servidor envia o estado imediatamente após cada chamada.
-  try{
-    const wsProtocol = location.protocol === "https:" ? "wss:" : "ws:";
-    const ws = new WebSocket(wsProtocol + "//" + location.host);
-    ws.addEventListener("message", ev => {
-      try{
-        const msg = JSON.parse(ev.data);
-        if(msg && msg.type === "state" && msg.state) renderState(msg.state);
-      }catch(e){}
-    });
-    ws.addEventListener("close", () => {
-      // O polling abaixo continua funcionando mesmo se o WebSocket cair.
-    });
-  }catch(e){}
-
-  loadState();
-  loadAd();
-  setInterval(loadState, 1500);
-  setInterval(loadAd, 10000);
+  async function loadState(){try{const r=await fetch('/api/state',{cache:'no-store'});if(r.ok)renderState(await r.json())}catch{}}
+  $("soundButton").onclick=unlockAudio;window.addEventListener('pointerdown',()=>{if(!audioReady)unlockAudio()},{once:true});
+  try{const p=location.protocol==='https:'?'wss:':'ws:';const ws=new WebSocket(p+'//'+location.host);ws.onmessage=e=>{try{const m=JSON.parse(e.data);if(m.type==='state')renderState(m.state)}catch{}}}catch{}
+  loadState();loadAd();setInterval(loadState,1500);setInterval(loadAd,8000);setInterval(()=>{loadState()},30000);
 })();
 </script>
-
-</body></html>
