@@ -64,6 +64,7 @@
   let adUrl = "";
   let adSignature = "";
   let refreshTimer = null;
+  let audioCtx = null;
 
   const $ = id => document.getElementById(id);
 
@@ -108,10 +109,10 @@
 
   async function loadAd(){
     try{
-      const r = await fetch("/api/settings/ad-video", {cache:"no-store"});
+      const r = await fetch("/api/config", {cache:"no-store"});
       if(!r.ok) return;
       const data = await r.json();
-      const url = data.url || "";
+      const url = data.videoUrl || "";
       const sig = JSON.stringify(data);
       if(sig !== adSignature){
         adSignature = sig;
@@ -125,41 +126,42 @@
     try{
       const Ctx = window.AudioContext || window.webkitAudioContext;
       if(!Ctx) { audioReady=true; return; }
-      const ctx = new Ctx();
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
+      if(!audioCtx) audioCtx = new Ctx();
+      if(audioCtx.state === "suspended") await audioCtx.resume();
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = "sine";
       o.frequency.value = 880;
-      g.gain.value = 0.0001;
-      o.connect(g); g.connect(ctx.destination);
-      o.start(); o.stop(ctx.currentTime + 0.03);
-      await ctx.resume();
-      audioReady=true;
-      $("soundButton").textContent="🔊 Som ativado";
+      g.gain.value = 0.00001;
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(); o.stop(audioCtx.currentTime + 0.025);
+      audioReady = true;
+      $("soundButton").textContent = "🔊 Som ativado";
       $("soundButton").classList.add("active");
-    }catch(e){}
+    }catch(e){
+      console.warn("Áudio não pôde ser ativado", e);
+    }
   }
 
   function dingDong(){
-    if(!audioReady) return;
+    if(!audioReady || !audioCtx) return;
     try{
-      const Ctx = window.AudioContext || window.webkitAudioContext;
-      const ctx = new Ctx();
-      const now = ctx.currentTime;
-
+      if(audioCtx.state === "suspended") audioCtx.resume();
+      const now = audioCtx.currentTime + 0.02;
       function tone(freq, start, duration, volume){
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
         osc.type = "sine";
         osc.frequency.setValueAtTime(freq, start);
         gain.gain.setValueAtTime(0.0001, start);
         gain.gain.exponentialRampToValueAtTime(volume, start + 0.015);
         gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.start(start); osc.stop(start + duration + 0.02);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(start); osc.stop(start + duration + 0.03);
       }
-      tone(1046.5, now, 0.42, 0.20);       // DING agudo
-      tone(659.3, now + 0.38, 0.58, 0.24); // DONG grave
-    }catch(e){}
+      tone(1046.5, now, 0.42, 0.20);
+      tone(659.3, now + 0.38, 0.58, 0.24);
+    }catch(e){ console.warn("Falha ao tocar campainha", e); }
   }
 
   function flashCall(){
@@ -170,8 +172,9 @@
   }
 
   function renderState(state){
-    const called = state.called || state.lastCalled || null;
-    const history = state.history || state.lastCalls || [];
+    const calls = Array.isArray(state.called) ? state.called : [];
+    const called = calls[0] || state.lastCalled || null;
+    const history = calls.slice(0,3);
     if(called){
       $("calledTicket").textContent = called.ticket || "---";
       $("calledInfo").textContent = called.priority ? "ATENDIMENTO PREFERENCIAL" : "Dirija-se ao atendimento";
@@ -206,9 +209,24 @@
   $("soundButton").addEventListener("click", unlockAudio);
   window.addEventListener("pointerdown", function(){ if(!audioReady) unlockAudio(); }, {once:true});
 
+  // Sincronização em tempo real: o servidor envia o estado imediatamente após cada chamada.
+  try{
+    const wsProtocol = location.protocol === "https:" ? "wss:" : "ws:";
+    const ws = new WebSocket(wsProtocol + "//" + location.host);
+    ws.addEventListener("message", ev => {
+      try{
+        const msg = JSON.parse(ev.data);
+        if(msg && msg.type === "state" && msg.state) renderState(msg.state);
+      }catch(e){}
+    });
+    ws.addEventListener("close", () => {
+      // O polling abaixo continua funcionando mesmo se o WebSocket cair.
+    });
+  }catch(e){}
+
   loadState();
   loadAd();
-  setInterval(loadState, 2000);
+  setInterval(loadState, 1500);
   setInterval(loadAd, 10000);
 })();
 </script>
