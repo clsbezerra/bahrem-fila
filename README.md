@@ -1,6 +1,6 @@
-# Bahrem Burger & Grill — Fila Pro 3.4.1
+# Bahrem Burger & Grill — Fila Pro 3.5.1
 
-## Novidades da 3.4.1
+## Novidades da 3.5.1
 - Cliente recebe token individual para acompanhar a senha.
 - A senha é salva no navegador e pode ser recuperada após atualizar/fechar e reabrir a página.
 - Página inicial mostra “Acompanhar minha senha” quando existe um atendimento salvo no aparelho.

@@ -24,6 +24,7 @@ async function init(){
   await pool.query("ALTER TABLE admins ADD COLUMN IF NOT EXISTS active BOOLEAN NOT NULL DEFAULT TRUE");
   await pool.query("ALTER TABLE tickets ADD COLUMN IF NOT EXISTS public_token_hash TEXT");
   await pool.query("CREATE UNIQUE INDEX IF NOT EXISTS idx_tickets_public_token_hash ON tickets(public_token_hash) WHERE public_token_hash IS NOT NULL");
+  await pool.query(`CREATE TABLE IF NOT EXISTS app_settings (key TEXT PRIMARY KEY, value TEXT, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`);
 
   const bootstrap=String(process.env.ADMIN_BOOTSTRAP||"").toLowerCase()==="true";
   const username=String(process.env.ADMIN_USER||"admin").trim();
@@ -162,7 +163,18 @@ app.post("/api/call",auth,async(req,res)=>{
 app.post("/api/serve/:ticket",auth,async(req,res)=>{await pool.query("UPDATE tickets SET status='served',served_at=NOW() WHERE ticket=$1 AND status='called'",[req.params.ticket]);res.json({ok:true});broadcast()});
 app.post("/api/reset",auth,async(req,res)=>{await pool.query("UPDATE tickets SET status='cancelled',cancelled_at=NOW() WHERE status IN ('waiting','called')");res.json({ok:true});broadcast()});
 app.get("/api/qr",async(req,res)=>{const target=(process.env.PUBLIC_URL||`${req.protocol}://${req.get("host")}`)+"/";res.type("png").send(await QRCode.toBuffer(target,{width:900,margin:2,color:{dark:"#111214",light:"#ffffff"}}))});
-app.get("/api/config",(req,res)=>res.json({restaurantName:process.env.RESTAURANT_NAME||"Bahrem Burger & Grill"}));
+app.get("/api/config",async(req,res)=>{
+  const r=await pool.query("SELECT key,value FROM app_settings WHERE key IN ('video_url')");
+  const settings=Object.fromEntries(r.rows.map(x=>[x.key,x.value]));
+  res.json({restaurantName:process.env.RESTAURANT_NAME||"Bahrem Burger & Grill",videoUrl:settings.video_url||""});
+});
+app.patch("/api/config",auth,async(req,res)=>{
+  const videoUrl=String(req.body?.videoUrl||"").trim();
+  if(videoUrl.length>1000)return res.status(400).json({error:"O link do vídeo é muito longo."});
+  if(videoUrl && !/^https?:\/\//i.test(videoUrl))return res.status(400).json({error:"Informe um link começando com https:// ou http://"});
+  await pool.query(`INSERT INTO app_settings(key,value,updated_at) VALUES('video_url',$1,NOW()) ON CONFLICT(key) DO UPDATE SET value=EXCLUDED.value,updated_at=NOW()`,[videoUrl]);
+  res.json({ok:true,videoUrl});
+});
 app.get("*",(req,res)=>res.sendFile(path.join(__dirname,"public","index.html")));
 
 init().then(()=>server.listen(PORT,()=>console.log(`Bahrem Fila em http://localhost:${PORT}`))).catch(e=>{console.error(e);process.exit(1)});

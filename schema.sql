@@ -23,3 +23,9 @@ CREATE TABLE IF NOT EXISTS tickets (
 
 CREATE INDEX IF NOT EXISTS idx_tickets_waiting ON tickets(status, category, priority DESC, created_at);
 CREATE INDEX IF NOT EXISTS idx_tickets_called ON tickets(status, called_at DESC);
+
+CREATE TABLE IF NOT EXISTS app_settings (
+  key TEXT PRIMARY KEY,
+  value TEXT,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
