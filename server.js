@@ -55,7 +55,7 @@ function auth(req,res,next){try{req.admin=jwt.verify((req.headers.authorization|
 async function getState(){
   const waiting=(await pool.query("SELECT * FROM tickets WHERE status='waiting' ORDER BY priority DESC, created_at ASC")).rows;
   // "called" = apenas senhas ainda em atendimento.
-  const called=(await pool.query("SELECT * FROM tickets WHERE status='called' ORDER BY called_at DESC LIMIT 100")).rows;
+  const called=(await pool.query("SELECT * FROM tickets WHERE status IN ('called','served') AND called_at IS NOT NULL ORDER BY called_at DESC LIMIT 100")).rows;
   // "history" = últimas senhas chamadas, mesmo depois que o atendimento foi finalizado.
   const history=(await pool.query("SELECT * FROM tickets WHERE called_at IS NOT NULL ORDER BY called_at DESC LIMIT 3")).rows;
   return {waiting,called,history};
