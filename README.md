@@ -1,4 +1,4 @@
-# Bahrem Fila Pro — v3.12
+# Bahrem Fila Pro — v3.13
 
 Atualização para operação em monitor de 24"/Full HD e publicidade nas páginas dos clientes.
 
