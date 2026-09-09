@@ -18,18 +18,18 @@ body{position:relative}
 #adContainer video{object-fit:cover}
 .ad-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;background:#010302;color:#aeb8b0;text-align:center}
 .ad-placeholder strong{font-size:18px;color:#eaf3eb}.ad-placeholder span{font-size:12px}
-.ad-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:66px;height:66px;border:2px solid #8aff9b;border-radius:50%;background:rgba(2,15,8,.58);color:#fff;font-size:28px;font-weight:900;cursor:pointer;z-index:5;box-shadow:0 0 24px rgba(78,245,102,.28)}
+.ad-play{display:none !important}
 /* Main ticket */
 #ticketZone{left:59.88%;top:20.82%;width:36.68%;height:22.96%;display:flex;align-items:center;justify-content:center;text-align:center}
-#calledTicket{font-size:clamp(90px,8.8vw,165px);line-height:.8;font-weight:950;letter-spacing:4px;color:#e9ffe9;text-shadow:0 0 14px rgba(100,255,117,.58),0 0 34px rgba(52,232,79,.28);margin-top:14px}
-#calledInfo{position:absolute;left:0;right:0;bottom:10px;font-size:clamp(15px,1.25vw,24px);font-weight:900;color:#eef7ef}
+#calledTicket{font-size:clamp(78px,7.6vw,145px);line-height:.82;font-weight:950;letter-spacing:4px;color:#e9ffe9;text-shadow:0 0 14px rgba(100,255,117,.58),0 0 34px rgba(52,232,79,.28);margin-top:-2px}
+#calledInfo{position:absolute;left:0;right:0;bottom:13px;font-size:clamp(13px,1.05vw,20px);font-weight:900;color:#eef7ef;line-height:1.1;white-space:nowrap}
 #calledTime{display:none}
 .ticket-pulse{animation:pulse .8s ease 2}
 @keyframes pulse{50%{transform:scale(1.025);filter:brightness(1.15)}}
 /* History */
-#historyZone{left:60.12%;top:52.36%;width:35.45%;height:17.12%;display:grid;grid-template-rows:repeat(3,1fr);gap:7px;padding:1px 10px 1px 12px}
-.history-item{min-width:0;border:1px solid rgba(36,144,72,.55);border-radius:10px;background:rgba(2,19,10,.76);display:grid;grid-template-columns:128px 1fr auto;align-items:center;padding:3px 12px;gap:10px}
-.history-ticket{font-size:clamp(22px,2vw,35px);font-weight:950;color:#6dff79;letter-spacing:1px}
+#historyZone{left:60.12%;top:48.55%;width:35.45%;height:19.05%;display:grid;grid-template-rows:repeat(3,1fr);gap:5px;padding:1px 10px 1px 12px}
+.history-item{min-width:0;border:1px solid rgba(36,144,72,.55);border-radius:10px;background:rgba(2,19,10,.76);display:grid;grid-template-columns:112px 1fr auto;align-items:center;padding:2px 10px;gap:8px}
+.history-ticket{font-size:clamp(20px,1.75vw,31px);font-weight:950;color:#6dff79;letter-spacing:1px}
 .history-category{font-size:clamp(12px,1vw,18px);font-weight:700;color:#e7eee8;white-space:nowrap}
 .history-meta{font-size:clamp(10px,.8vw,14px);color:#c2cbc4;white-space:nowrap;text-align:right}.history-meta strong{color:#71f57c;font-size:1.05em}
 .history-empty{height:100%;display:flex;align-items:center;justify-content:center;color:#78847b;font-size:14px}
@@ -39,7 +39,7 @@ body{position:relative}
 .wait-item:last-child{border-right:0}
 .wait-copy{min-width:0}.wait-label{font-size:clamp(15px,1.35vw,25px);font-weight:900;white-space:nowrap}.wait-sub{font-size:clamp(10px,.85vw,15px);margin-top:3px;white-space:nowrap}.wait-count{font-size:clamp(34px,3.3vw,58px);line-height:1;font-weight:950;color:#6cf77a}.wait-item.pref .wait-count{color:#baff4d}
 /* Header live + tiny sound control */
-#liveZone{right:3.05%;top:5.4%;height:5%;display:flex;align-items:center;gap:8px}
+#liveZone{left:auto;right:3.05%;top:1.25%;height:5%;display:flex;align-items:center;gap:8px;z-index:25}
 .live-dot{width:12px;height:12px;border-radius:50%;background:#35f27b;box-shadow:0 0 13px #35f27b;display:inline-block}
 .live-text{font-size:clamp(14px,1.1vw,22px);font-weight:900;letter-spacing:1px}
 #soundButton{position:absolute;right:3.25%;top:9.15%;width:31px;height:22px;border:1px solid rgba(72,236,100,.85);border-radius:999px;background:rgba(0,12,6,.55);color:#eaffed;font-size:11px;line-height:1;cursor:pointer;z-index:20;padding:0;opacity:.88}
@@ -76,13 +76,10 @@ body{position:relative}
   function renderAd(raw){
     const c=$('adContainer'),v=videoInfo(raw); if(!v){adMessage('Publicidade não configurada','Configure o vídeo no painel administrativo.');return}
     if(v.type==='video'){
-      c.innerHTML=`<video id="adVideo" src="${esc(v.src)}" autoplay muted loop playsinline preload="auto" controls></video><button id="adPlay" class="ad-play" type="button">▶</button>`;
-      const el=$('adVideo'),btn=$('adPlay'); const play=()=>el.play().then(()=>btn.style.display='none').catch(()=>btn.style.display='block');
-      el.addEventListener('playing',()=>btn.style.display='none'); el.addEventListener('error',()=>adMessage('Não foi possível abrir o vídeo','Verifique o link do vídeo.')); btn.onclick=play; play(); return;
+      c.innerHTML=`<video id="adVideo" src="${esc(v.src)}" autoplay muted loop playsinline preload="auto" controls></video>`;
+      const el=$('adVideo'); el.addEventListener('error',()=>adMessage('Não foi possível abrir o vídeo','Verifique o link do vídeo.')); el.play().catch(()=>{}); return;
     }
-    c.innerHTML=`<iframe id="adFrame" src="${esc(v.src)}" title="Publicidade" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe><button id="adFramePlay" class="ad-play" type="button">▶</button>`;
-    const frame=$('adFrame'),btn=$('adFramePlay');
-    btn.onclick=()=>{try{const u=new URL(frame.src);u.searchParams.set('autoplay','1');u.searchParams.set('mute','1');frame.src=u.toString();setTimeout(()=>btn.style.display='none',900)}catch{}};
+    c.innerHTML=`<iframe id="adFrame" src="${esc(v.src)}" title="Publicidade" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
   }
   async function loadAd(){try{const r=await fetch('/api/config',{cache:'no-store'});if(!r.ok)return;const d=await r.json();const sig=String(d.videoUrl||'');if(sig!==adSignature){adSignature=sig;renderAd(sig)}}catch{}}
   async function unlockAudio(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C){audioReady=true;return}if(!audioCtx)audioCtx=new C();if(audioCtx.state==='suspended')await audioCtx.resume();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=880;g.gain.value=.00001;o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+.02);audioReady=true;$('soundButton').textContent='🔊';$('soundButton').classList.add('active')}catch(e){console.warn(e)}}
